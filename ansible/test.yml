@@ -1,0 +1,20 @@
+---
+- name: test 
+  hosts: localhost
+  # become: yes
+
+  vars:
+    workDir: /Users/deversma/Development/picluster/
+
+  tasks:
+
+    - name: download file
+      ansible.builtin.get_url:
+        url: https://downloads.raspberrypi.org/raspios_lite_arm64_latest
+        dest: "{{ workDir }}"
+      register: result
+
+    - debug: var=result.dest
+
+    - name: decompress downloaded file
+      command: 7z x {{ result.dest }} -o{{ workDir }} -aos

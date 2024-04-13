@@ -1,0 +1,84 @@
+---
+# Install all the things needed for the cluster to be "self-sufficient"
+# On the router, be sure to perform the following tasks:
+#   - setup static routes
+#   - setup tftp dhcp option
+
+- name: configure control plane 
+  hosts: control_plane
+  become: yes
+
+  tasks:
+    # - name: update everything
+    #   ansible.builtin.apt:
+    #     upgrade: dist
+    #     update_cache: yes
+
+    - name: install packages (nfs-kernel-server, rpcbind, tftpd-hpa)
+      ansible.builtin.apt:
+        pkg:
+        - nfs-kernel-server
+        - rpcbind
+        - tftpd-hpa
+
+    # - name: Check if a reboot is needed
+    #   register: reboot_required_file
+    #   stat: path=/var/run/reboot-required get_md5=no
+
+    # - ansible.builtin.debug:
+    #     msg: "should reboot"
+    #   when: reboot_required_file.stat.exists
+
+    - name: create nfs dir
+      ansible.builtin.file:
+        path: /nfs/base
+        state: directory
+        owner: root
+        group: root
+        
+    - name: create tftp dir
+      ansible.builtin.file:
+        path: /tftpboot
+        state: directory
+        owner: tftp
+        group: tftp
+        mode: '0777'
+        
+    - name: create mount dirs for pi image
+      ansible.builtin.file:
+        path: '/tmp/{{ item }}'
+        state: directory
+        owner: root
+        group: root
+      loop:
+        - 'rootmnt'
+        - 'bootmnt'
+
+    - name: download piOS (https://downloads.raspberrypi.org/raspios_lite_arm64_latest)
+      ansible.builtin.debug: msg="unimplemented"
+
+    - name: expand piOS into directories
+      ansible.builtin.debug: msg="unimplemented"
+
+    - name: config nfs
+      ansible.builtin.debug: msg="unimplemented"
+
+    - name: config tftp
+      ansible.builtin.debug: msg="unimplemented"
+
+    - name: enable and restart services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: true
+        state: restarted
+      loop:
+        - 'rpcbind'
+        - 'nfs-server'
+        - 'tftpd-hpa'
+
+  handlers:
+    - name: reboot
+      ansible.builtin.debug: msg="unimplemented"
+
+
+...

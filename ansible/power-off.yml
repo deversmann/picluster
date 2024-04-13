@@ -1,0 +1,18 @@
+---
+# Shutdown the whole cluster (workers then control_plane)
+
+- name: shutdown workers
+  hosts: workers
+  become: yes
+
+  tasks:
+    - name: shutdown
+      community.general.shutdown:
+
+- name: shutdown control plane
+  hosts: control_plane
+  become: yes
+
+  tasks:
+    - name: shutdown
+      community.general.shutdown:

@@ -1,0 +1,9 @@
+---
+# configure everything for a new node (must be manually added to inventory first)
+
+- name: configure router for new node
+  hosts: router
+  tasks:
+    - name: setup static routes
+
+
